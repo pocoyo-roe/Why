@@ -1,75 +1,71 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
 import type { ComponentProps, ReactNode } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import type { Category, Why } from '../data/whys';
-import { CATEGORY_COLORS, CATEGORY_ICONS, usePalette } from '../theme';
+import { bookingService } from '../booking';
+import { usePalette } from '../theme';
 
-export function tapFeedback() {
-  if (Platform.OS !== 'web') Haptics.selectionAsync().catch(() => {});
-}
+type IconName = ComponentProps<typeof Ionicons>['name'];
 
-export function CategoryTag({ category }: { category: Category }) {
-  const color = CATEGORY_COLORS[category];
-  return (
-    <View style={[styles.tag, { backgroundColor: color + '22' }]}>
-      <Ionicons name={CATEGORY_ICONS[category]} size={12} color={color} />
-      <Text style={[styles.tagText, { color }]}>{category}</Text>
-    </View>
-  );
-}
-
-export function UnsettledTag() {
+export function Button({
+  label,
+  icon,
+  onPress,
+  disabled,
+  loading,
+  variant = 'primary',
+}: {
+  label: string;
+  icon?: IconName;
+  onPress: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger';
+}) {
   const palette = usePalette();
-  return (
-    <View style={[styles.tag, { backgroundColor: palette.warningSoft }]}>
-      <Ionicons name="help-circle" size={12} color={palette.warning} />
-      <Text style={[styles.tagText, { color: palette.warning }]}>Still a mystery</Text>
-    </View>
-  );
-}
-
-export function WhyCard({ why }: { why: Why }) {
-  const palette = usePalette();
-  return (
-    <Pressable
-      onPress={() => router.push(`/why/${why.id}`)}
-      accessibilityRole="link"
-      style={({ pressed }) => [
-        styles.card,
-        { backgroundColor: palette.card, borderColor: palette.border, opacity: pressed ? 0.7 : 1 },
-      ]}
-    >
-      <View style={styles.tagRow}>
-        <CategoryTag category={why.category} />
-        {why.unsettled && <UnsettledTag />}
-      </View>
-      <Text style={[styles.cardTitle, { color: palette.text }]}>{why.question}</Text>
-      <Text style={[styles.cardBody, { color: palette.muted }]} numberOfLines={2}>
-        {why.short}
-      </Text>
-    </Pressable>
-  );
-}
-
-export function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
-  const palette = usePalette();
+  const colors = {
+    primary: { bg: palette.accent, fg: palette.accentText, border: palette.accent },
+    secondary: { bg: palette.card, fg: palette.text, border: palette.border },
+    danger: { bg: palette.card, fg: palette.danger, border: palette.border },
+  }[variant];
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled || loading}
       accessibilityRole="button"
-      accessibilityState={{ selected: active }}
-      style={[
-        styles.chip,
-        active
-          ? { backgroundColor: palette.accent, borderColor: palette.accent }
-          : { backgroundColor: palette.card, borderColor: palette.border },
+      accessibilityState={{ disabled: disabled || loading }}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          backgroundColor: colors.bg,
+          borderColor: colors.border,
+          opacity: disabled ? 0.45 : pressed ? 0.8 : 1,
+        },
       ]}
     >
-      <Text style={[styles.chipText, { color: active ? palette.accentText : palette.text }]}>{label}</Text>
+      {loading ? (
+        <ActivityIndicator color={colors.fg} />
+      ) : (
+        <>
+          {icon && <Ionicons name={icon} size={18} color={colors.fg} />}
+          <Text style={[styles.buttonText, { color: colors.fg }]}>{label}</Text>
+        </>
+      )}
     </Pressable>
+  );
+}
+
+/** Reminds everyone (including you) that bookings aren't real until a booking system is connected. */
+export function DemoBanner() {
+  const palette = usePalette();
+  if (!bookingService.isDemo) return null;
+  return (
+    <View style={[styles.banner, { backgroundColor: palette.warningSoft }]}>
+      <Ionicons name="construct" size={16} color={palette.warning} />
+      <Text style={[styles.bannerText, { color: palette.warning }]}>
+        Demo timetable. Bookings made here aren&apos;t real yet.
+      </Text>
+    </View>
   );
 }
 
@@ -79,7 +75,7 @@ export function EmptyState({
   body,
   action,
 }: {
-  icon: ComponentProps<typeof Ionicons>['name'];
+  icon: IconName;
   title: string;
   body: string;
   action?: ReactNode;
@@ -88,7 +84,7 @@ export function EmptyState({
   return (
     <View style={styles.empty}>
       <View style={[styles.emptyIcon, { backgroundColor: palette.accentSoft }]}>
-        <Ionicons name={icon} size={32} color={palette.accent} />
+        <Ionicons name={icon} size={30} color={palette.accent} />
       </View>
       <Text style={[styles.emptyTitle, { color: palette.text }]}>{title}</Text>
       <Text style={[styles.emptyBody, { color: palette.muted }]}>{body}</Text>
@@ -97,73 +93,51 @@ export function EmptyState({
   );
 }
 
-export function PrimaryButton({
-  label,
-  icon,
-  onPress,
-  disabled,
-}: {
-  label: string;
-  icon?: ComponentProps<typeof Ionicons>['name'];
-  onPress: () => void;
-  disabled?: boolean;
-}) {
+export function Card({ children, style }: { children: ReactNode; style?: object }) {
   const palette = usePalette();
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      accessibilityRole="button"
-      style={({ pressed }) => [
-        styles.button,
-        { backgroundColor: palette.accent, opacity: disabled ? 0.4 : pressed ? 0.8 : 1 },
-      ]}
-    >
-      {icon && <Ionicons name={icon} size={18} color={palette.accentText} />}
-      <Text style={[styles.buttonText, { color: palette.accentText }]}>{label}</Text>
-    </Pressable>
+    <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }, style]}>{children}</View>
+  );
+}
+
+export function Row({ icon, children }: { icon: IconName; children: ReactNode }) {
+  const palette = usePalette();
+  return (
+    <View style={styles.row}>
+      <Ionicons name={icon} size={18} color={palette.muted} style={styles.rowIcon} />
+      <Text style={[styles.rowText, { color: palette.text }]}>{children}</Text>
+    </View>
   );
 }
 
 export const styles = StyleSheet.create({
-  card: {
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: 16,
-    gap: 8,
-  },
-  cardTitle: { fontSize: 17, fontWeight: '600', lineHeight: 23 },
-  cardBody: { fontSize: 14, lineHeight: 20 },
-  tagRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
-  tag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-  },
-  tagText: { fontSize: 12, fontWeight: '600' },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 999,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  chipText: { fontSize: 14, fontWeight: '500' },
-  empty: { alignItems: 'center', paddingHorizontal: 32, paddingTop: 64, gap: 10 },
-  emptyIcon: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
-  emptyTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center' },
-  emptyBody: { fontSize: 15, lineHeight: 21, textAlign: 'center', marginBottom: 8 },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    minHeight: 50,
     paddingHorizontal: 20,
-    paddingVertical: 13,
-    borderRadius: 12,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   buttonText: { fontSize: 16, fontWeight: '600' },
+  banner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 12,
+  },
+  bannerText: { fontSize: 13, fontWeight: '600', flex: 1 },
+  card: { borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, padding: 16, gap: 10 },
+  row: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  rowIcon: { marginTop: 2 },
+  rowText: { fontSize: 15, lineHeight: 22, flex: 1 },
+  empty: { alignItems: 'center', paddingHorizontal: 32, paddingTop: 56, gap: 10 },
+  emptyIcon: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
+  emptyTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center' },
+  emptyBody: { fontSize: 15, lineHeight: 21, textAlign: 'center', marginBottom: 8 },
+  label: { fontSize: 12, fontWeight: '700', letterSpacing: 1 },
 });

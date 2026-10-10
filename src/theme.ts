@@ -1,51 +1,37 @@
 import { useColorScheme } from 'react-native';
 
-import type { Category } from './data/whys';
-
 const light = {
-  background: '#F7F5F2',
+  background: '#F6F1EB',
   card: '#FFFFFF',
-  text: '#1C1B1F',
-  muted: '#6B6870',
-  border: '#E6E2DC',
-  accent: '#5B4FE0',
+  text: '#231A15',
+  muted: '#76685E',
+  border: '#E6DCD1',
+  accent: '#B5532A',
   accentText: '#FFFFFF',
-  accentSoft: '#ECEAFD',
-  danger: '#C62F3D',
-  warning: '#9A5B00',
-  warningSoft: '#FFF1D6',
+  accentSoft: '#F6E3D8',
+  success: '#2F7D4F',
+  successSoft: '#DDF0E3',
+  danger: '#B3261E',
+  warningSoft: '#FFF0D4',
+  warning: '#8A5300',
 };
 
 export type Palette = typeof light;
 
 const dark: Palette = {
-  background: '#121116',
-  card: '#1D1C22',
-  text: '#F2F0F5',
-  muted: '#A19DA8',
-  border: '#2E2C35',
-  accent: '#9C93FF',
-  accentText: '#121116',
-  accentSoft: '#2A2748',
-  danger: '#FF6B76',
-  warning: '#F5B95A',
-  warningSoft: '#3A2D14',
-};
-
-export const CATEGORY_COLORS: Record<Category, string> = {
-  Nature: '#2E9E5B',
-  Body: '#D9485F',
-  Space: '#4C6FE0',
-  Everyday: '#D98A1E',
-  Culture: '#9B51C9',
-};
-
-export const CATEGORY_ICONS: Record<Category, 'leaf' | 'heart' | 'planet' | 'cafe' | 'library'> = {
-  Nature: 'leaf',
-  Body: 'heart',
-  Space: 'planet',
-  Everyday: 'cafe',
-  Culture: 'library',
+  background: '#16110E',
+  card: '#221B17',
+  text: '#F4ECE5',
+  muted: '#AE9F93',
+  border: '#382D26',
+  accent: '#F08A5D',
+  accentText: '#16110E',
+  accentSoft: '#3B241A',
+  success: '#7FD39D',
+  successSoft: '#1D3326',
+  danger: '#FF8A80',
+  warningSoft: '#3A2B12',
+  warning: '#F5C063',
 };
 
 export function usePalette(): Palette {

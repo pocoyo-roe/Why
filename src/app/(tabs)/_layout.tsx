@@ -17,22 +17,23 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, size }) => <Ionicons name="compass" color={color} size={size} />,
+          title: 'Book',
+          headerTitle: 'Roe Saunas',
+          tabBarIcon: ({ color, size }) => <Ionicons name="calendar" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
-        name="mine"
+        name="bookings"
         options={{
-          title: 'My Whys',
-          tabBarIcon: ({ color, size }) => <Ionicons name="chatbubble-ellipses" color={color} size={size} />,
+          title: 'My bookings',
+          tabBarIcon: ({ color, size }) => <Ionicons name="ticket" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
-        name="saved"
+        name="info"
         options={{
-          title: 'Saved',
-          tabBarIcon: ({ color, size }) => <Ionicons name="bookmark" color={color} size={size} />,
+          title: 'Info',
+          tabBarIcon: ({ color, size }) => <Ionicons name="information-circle" color={color} size={size} />,
         }}
       />
     </Tabs>

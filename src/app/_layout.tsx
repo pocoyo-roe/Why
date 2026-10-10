@@ -2,7 +2,7 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
-import { WhyStoreProvider } from '../store/WhyStore';
+import { BookingsProvider } from '../store/BookingsStore';
 import { usePalette } from '../theme';
 
 export default function RootLayout() {
@@ -22,16 +22,15 @@ export default function RootLayout() {
   };
 
   return (
-    <WhyStoreProvider>
+    <BookingsProvider>
       <ThemeProvider value={theme}>
         <Stack screenOptions={{ headerShadowVisible: false, headerBackButtonDisplayMode: 'minimal' }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="why/[id]" options={{ title: '' }} />
-          <Stack.Screen name="mine/[id]" options={{ title: 'My why' }} />
-          <Stack.Screen name="ask" options={{ presentation: 'modal', title: 'Ask a why' }} />
+          <Stack.Screen name="book/[id]" options={{ title: 'Book' }} />
+          <Stack.Screen name="booking/[id]" options={{ title: 'Your booking' }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
-    </WhyStoreProvider>
+    </BookingsProvider>
   );
 }

@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "Why?",
-    "slug": "why",
+    "name": "Roe Saunas",
+    "slug": "roe-saunas",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "uk.co.roesaunas.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -16,7 +17,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "uk.co.roesaunas.app"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -26,6 +28,6 @@
       "expo-router",
       "expo-font"
     ],
-    "scheme": "why"
+    "scheme": "roesaunas"
   }
 }
