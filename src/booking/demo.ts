@@ -57,7 +57,11 @@ async function loadTaken(): Promise<Record<string, number>> {
 }
 
 async function saveTaken(taken: Record<string, number>) {
-  await AsyncStorage.setItem(TAKEN_KEY, JSON.stringify(taken));
+  try {
+    await AsyncStorage.setItem(TAKEN_KEY, JSON.stringify(taken));
+  } catch {
+    // Storage can be unavailable (e.g. a private browser window); the demo still works for this visit.
+  }
 }
 
 function buildDay(date: Date, taken: Record<string, number>): Session[] {
